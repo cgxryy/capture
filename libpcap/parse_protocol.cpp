@@ -126,15 +126,15 @@ void Protocol_parse::parse_transport(const struct pcap_pkthdr* pack, const u_cha
 			struct tcphdr* tcp;
 			tcp = reinterpret_cast<struct tcphdr*>(const_cast<u_char*>(content));
 			cout << "\nTCP:"<< endl;
-			cout << "Source Port: " << dec << (unsigned int)ntohs(tcp->source) << endl;
-			cout << "Destination Port: " << dec<< (unsigned int)ntohs(tcp->dest) << endl;
-			cout << "Window size: " << dec << (unsigned int)ntohs(tcp->window) << endl;
-			cout << "ack: " << dec << (unsigned int)ntohs(tcp->ack) << endl;
-			cout << "fin: " << dec << (unsigned int)ntohs(tcp->fin) << endl;
-			cout << "syn: " << dec << (unsigned int)ntohs(tcp->syn) << endl;
-			cout << "Urgent: " << dec << (unsigned int)ntohs(tcp->urg) << endl;
-			cout << "Sequence Number: " << dec << (unsigned long)ntohl(tcp->seq) << endl;
-			cout << "ACK Sequence Number: " << dec << (unsigned long)ntohl(tcp->ack_seq) << endl;
+			cout << "Source Port: " << dec << (int)ntohs(tcp->source) << endl;
+			cout << "Destination Port: " << dec<< (int)ntohs(tcp->dest) << endl;
+			cout << "Window size: " << dec << (int)ntohs(tcp->window) << endl;
+			cout << "ack: " << dec << (int)ntohs(tcp->ack) << endl;
+			cout << "fin: " << dec << (int)ntohs(tcp->fin) << endl;
+			cout << "syn: " << dec << (int)ntohs(tcp->syn) << endl;
+			cout << "Urgent: " << dec << (int)ntohs(tcp->urg) << endl;
+			cout << "Sequence Number: " << dec << (long)ntohl(tcp->seq) << endl;
+			cout << "ACK Sequence Number: " << dec << (long)ntohl(tcp->ack_seq) << endl;
 			break;
 		}
 		//UDP
