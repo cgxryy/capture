@@ -1,11 +1,11 @@
 // =====================================================================================
 // 
-//       Filename:  capture.h
+//       Filename:  init_capture.h
 //
 //    Description:  
 //
 //        Version:  1.0
-//        Created:  2015年02月24日 23时00分35秒
+//        Created:  2015年02月25日 21时49分56秒
 //       Revision:  none
 //       Compiler:  g++
 //
@@ -17,32 +17,59 @@
 #ifndef CAPTURE_H_
 #define CAPTURE_H_
 
+#include <string>
 #include <pcap.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/if_ether.h>
-#include <netinet/ip.h>
-#include <netinet/udp.h>
-#include <netinet/tcp.h>
-#include <netinet/ip_icmp.h>
 
-class Protocol_analysis
+//网卡名称最大长度
+const int DEVICE_NAME_LEN = 1024;
+//过滤条件最大长度
+const int FILTER_LEN = 10*1024;
+
+//报文处理回调函数
+void traffic_callback(unsigned char *pucCntx, const struct pcap_pkthdr *pskPktHdr, const unsigned char *content);
+
+
+class Capture
 {
 public:
-	Protocol_analysis(){}
-	~Protocol_analysis(){}
-	parse();
+	bool 		uiShowUsageOnly;
+	//网卡索引
+	unsigned char 	g_uiDeviceIndex;
+	//条件过滤器
+	std::string  	g_acFilter;
+	Capture() : 
+		uiShowUsageOnly(false),
+		g_uiDeviceIndex(-1),
+		pstHandle(NULL),
+		pstAllDevices(NULL),
+		pstDevice(NULL),
+		uiIP(0),
+		uiNetmask(0)
+	{}
+	~Capture(){}
 
+	bool search_print();
+	void start();
+	
 private:
-	//参数未定
-	parse_ether(); 		//解析数据链路层:以太网,ARP,RARP之类
-	parse_network();     	//解析网络层:IP,ICMP之类 
-	parse_transport(); 	//解析传输层:TCP,UDP之类
-	/*
-	 * 自己的思路是，传过来包的char*类型，通过判断类型打印相应包信息后，调用下一层函数，char* 类型相应偏移多少，和json类似 
-	 * 最后一层打印数据内容
-	 */
+	//网卡名称	
+	std::string 	g_acDeviceName;	
+	char 		acErrBuff[PCAP_ERRBUF_SIZE];
+
+	pcap_t* 	pstHandle;
+	pcap_if_t* 	pstAllDevices;
+	pcap_if_t* 	pstDevice;
+
+	struct bpf_program 	stFilter;
+	bpf_u_int32 		uiIP;
+	bpf_u_int32 		uiNetmask;
+	
+
+	void usage_print();
+	bool open_interface();
+	bool set_filter();
+	void capture();
+
 };
 
-
-#endif
+#endif 
